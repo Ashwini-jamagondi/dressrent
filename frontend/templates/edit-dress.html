@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Dress - DressRent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        nav {
+            background: white;
+            padding: 1rem 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .form-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .current-image-section {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .current-image-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .current-image-container {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .current-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-image {
+            font-size: 5rem;
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .image-upload-box {
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .image-upload-box:hover {
+            background: #f0f2ff;
+            border-color: #5568d3;
+        }
+
+        .image-upload-box.drag-over {
+            background: #e8ecff;
+            border-color: #4557c2;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .preview-container {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .preview-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">👗 DressRent</div>
+        <div class="nav-links">
+            <a href="/my-dresses">← Back to My Uploads</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="loadingSection" class="loading">Loading dress details...</div>
+
+        <div id="formSection" class="form-card" style="display: none;">
+            <h1 class="form-title">✏️ Edit Your Dress</h1>
+            <p class="form-subtitle">Update dress details and add/change the image</p>
+
+            <div class="current-image-section">
+                <label class="current-image-label">Current Image</label>
+                <div class="current-image-container" id="currentImageContainer">
+                    <div class="no-image">👗</div>
+                </div>
+            </div>
+
+            <form id="editDressForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Dress Name *</label>
+                    <input type="text" id="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Saree">Saree</option>
+                            <option value="Lehenga">Lehenga</option>
+                            <option value="Gown">Gown</option>
+                            <option value="Anarkali">Anarkali</option>
+                            <option value="Traditional">Traditional</option>
+                            <option value="Western">Western</option>
+                            <option value="Party">Party</option>
+                            <option value="Wedding">Wedding</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Size</label>
+                        <select id="size">
+                            <option value="">Select Size</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="Free Size">Free Size</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price per Day (₹) *</label>
+                        <input type="number" id="price_per_day" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Security Deposit (₹) *</label>
+                        <input type="number" id="security_deposit" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" id="color">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="condition">
+                            <option value="">Select Condition</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Brand</label>
+                    <input type="text" id="brand">
+                </div>
+
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="location">
+                </div>
+
+                <div class="form-group">
+                    <label>Upload New Image (Optional)</label>
+                    <div class="image-upload-box" id="uploadBox">
+                        <div class="upload-icon">📸</div>
+                        <div class="upload-text">
+                            <strong>Click to upload</strong> or drag and drop<br>
+                            PNG, JPG or JPEG (Max 5MB)
+                        </div>
+                        <input type="file" id="image" class="file-input" accept="image/*">
+                    </div>
+                    <div class="preview-container" id="previewContainer">
+                        <img id="previewImage" class="preview-image" alt="Preview">
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/my-dresses'">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        💾 Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let currentDress = null;
+        let newImageFile = null;
+
+        async function loadDress() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dressId = urlParams.get('id');
+
+            if (!dressId) {
+                alert('Dress ID not found');
+                window.location.href = '/my-dresses';
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const response = await fetch(`${API_URL}/api/products/${dressId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load dress');
+                }
+
+                currentDress = await response.json();
+
+                // Populate form
+                document.getElementById('name').value = currentDress.name || '';
+                document.getElementById('description').value = currentDress.description || '';
+                document.getElementById('category').value = currentDress.category || '';
+                document.getElementById('size').value = currentDress.size || '';
+                document.getElementById('price_per_day').value = currentDress.price_per_day || '';
+                document.getElementById('security_deposit').value = currentDress.security_deposit || '';
+                document.getElementById('color').value = currentDress.color || '';
+                document.getElementById('condition').value = currentDress.condition || '';
+                document.getElementById('brand').value = currentDress.brand || '';
+                document.getElementById('location').value = currentDress.location || '';
+
+                // Show current image
+                const imageContainer = document.getElementById('currentImageContainer');
+                if (currentDress.image_url) {
+                    let imageUrl = currentDress.image_url;
+                    if (!imageUrl.startsWith('http')) {
+                        imageUrl = `${API_URL}${imageUrl}`;
+                    }
+                    imageContainer.innerHTML = `<img src="${imageUrl}" class="current-image" alt="Current">`;
+                } else {
+                    imageContainer.innerHTML = `<div class="no-image">👗</div>`;
+                }
+
+                document.getElementById('loadingSection').style.display = 'none';
+                document.getElementById('formSection').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to load dress details');
+                window.location.href = '/my-dresses';
+            }
+        }
+
+        // Image upload handling
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('image');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+
+        uploadBox.addEventListener('click', () => fileInput.click());
+
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.classList.add('drag-over');
+        });
+
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.classList.remove('drag-over');
+        });
+
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                fileInput.files = e.dataTransfer.files;
+                handleImagePreview(file);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleImagePreview(file);
+            }
+        });
+
+        function handleImagePreview(file) {
+            newImageFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                previewContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Form submission
+        document.getElementById('editDressForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please login first');
+                window.location.href = '/login';
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Saving...';
+
+            try {
+                const formData = new FormData();
+                formData.append('name', document.getElementById('name').value);
+                formData.append('description', document.getElementById('description').value);
+                formData.append('category', document.getElementById('category').value);
+                formData.append('size', document.getElementById('size').value);
+                formData.append('price_per_day', document.getElementById('price_per_day').value);
+                formData.append('security_deposit', document.getElementById('security_deposit').value);
+                formData.append('color', document.getElementById('color').value);
+                formData.append('condition', document.getElementById('condition').value);
+                formData.append('brand', document.getElementById('brand').value);
+                formData.append('location', document.getElementById('location').value);
+
+                // Add image if new one selected
+                if (newImageFile) {
+                    formData.append('image', newImageFile);
+                }
+
+                const response = await fetch(`${API_URL}/api/products/${currentDress.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('✅ Dress updated successfully!');
+                    window.location.href = '/my-dresses';
+                } else {
+                    const error = await response.json();
+                    alert('❌ Failed to update dress: ' + (error.detail || 'Unknown error'));
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '💾 Save Changes';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error updating dress. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💾 Save Changes';
+            }
+        });
+
+        window.onload = loadDress;
+    </script>
+</body>
+</html>

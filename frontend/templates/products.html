@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse All Dresses - DressRent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .notification-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .notification-bell {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            border: 2px solid #667eea;
+        }
+
+        .notification-bell:hover {
+            transform: scale(1.1);
+            background: #f8f9fa;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 380px;
+            max-height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification-header {
+            padding: 15px 20px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .notification-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .mark-all-read {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .mark-all-read:hover {
+            transform: scale(1.05);
+        }
+
+        .notification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .notification-item:hover {
+            background: #f8f9fa;
+        }
+
+        .notification-item.unread {
+            background: #f0f4ff;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .notification-message {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .no-notifications {
+            padding: 40px 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        .no-notifications-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+            border: 2px solid #667eea;
+            flex-shrink: 0;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .navbar {
+            background: white;
+            padding: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-brand h2 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 28px;
+            font-weight: 800;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            padding: 10px 18px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-links a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .products-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .page-header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        
+        .search-filter-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-btn {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .filter-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+        
+        .filter-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.25);
+        }
+        
+        .product-image-container {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            background: #f5f5f5;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.08);
+        }
+        
+        .no-image-placeholder {
+            font-size: 5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-info {
+            padding: 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-name {
+            font-size: 19px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            min-height: 50px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .product-owner {
+            font-size: 13px;
+            color: #667eea;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .product-details {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .product-details span {
+            font-size: 12px;
+            color: #555;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+        
+        .product-price {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 12px 0;
+        }
+        
+        .availability-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+        }
+        
+        .available {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .not-available {
+            background: #ef4444;
+            color: white;
+        }
+
+        .no-products {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .no-products h3 {
+            color: #667eea;
+            font-size: 28px;
+            margin: 15px 0;
+        }
+        
+        .no-products p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .cant-find-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+        
+        .cant-find-section h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .cant-find-section p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 25px;
+        }
+        
+        .request-btn {
+            padding: 16px 40px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .request-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        
+        .loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px;
+            color: white;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .notification-dropdown {
+                width: 320px;
+            }
+            
+            .nav-links {
+                gap: 3px;
+            }
+            
+            .nav-links a {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>👗 DressRent</h2>
+            </div>
+            <div class="nav-links">
+                <a href="/products" class="active">🏠 All Dresses</a>
+                <a href="/add-dress">➕ Upload Dress</a>
+                <a href="/my-dresses">📦 My Uploads</a>
+                <a href="/customer-requests">🔍 Requests</a>
+                <a href="/my-requests">📝 My Requests</a>
+                
+                <div class="notification-container">
+                    <div class="notification-bell" onclick="toggleNotifications()">
+                        🔔
+                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                    </div>
+                    
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="notification-header">
+                            <h3>🔔 Notifications</h3>
+                            <button class="mark-all-read" onclick="markAllRead()">Mark all read</button>
+                        </div>
+                        <div class="notification-list" id="notificationList">
+                            <div class="no-notifications">
+                                <div class="no-notifications-icon">🔔</div>
+                                <p>No notifications yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-icon" id="navProfileIcon" title="My Profile" onclick="window.location.href='/profile'">👤</div>
+                <a href="#" onclick="logout(); return false;">🚪 Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="products-container">
+        <div class="page-header">
+            <h1>🌟 Browse All Dresses</h1>
+            <p>Find your perfect dress from our amazing community!</p>
+        </div>
+
+        <div class="search-filter-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search dresses by name, type, or owner...">
+                <button class="search-btn" onclick="searchProducts()">🔍 Search</button>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="categoryFilter" onchange="applyFilters()">
+                        <option value="">All Categories</option>
+                        <option value="Saree">Saree</option>
+                        <option value="Lehenga">Lehenga</option>
+                        <option value="Gown">Gown</option>
+                        <option value="Anarkali">Anarkali</option>
+                        <option value="Wedding">Wedding</option>
+                        <option value="Party">Party</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Size</label>
+                    <select id="sizeFilter" onchange="applyFilters()">
+                        <option value="">All Sizes</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Availability</label>
+                    <select id="availabilityFilter" onchange="applyFilters()">
+                        <option value="">All</option>
+                        <option value="available">Available Only</option>
+                        <option value="rented">Rented Only</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Sort By</label>
+                    <select id="sortFilter" onchange="applyFilters()">
+                        <option value="newest">Newest First</option>
+                        <option value="price_low">Price: Low to High</option>
+                        <option value="price_high">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <div class="loading">Loading dresses...</div>
+        </div>
+
+        <div class="cant-find-section">
+            <h2>🔍 Can't Find What You're Looking For?</h2>
+            <p>No worries! Create a request and let dress owners help you find your perfect match.</p>
+            <button class="request-btn" onclick="window.location.href='/my-requests'">
+                ✨ Create a Request
+            </button>
+        </div>
+    </div>
+
+    <script>
+       // Fixed JavaScript for products.html - Replace the script section
+
+const API_URL = 'http://127.0.0.1:8000';
+let allProducts = [];
+let filteredProducts = [];
+let notifications = [];
+
+async function loadNotifications() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+        const response = await fetch(`${API_URL}/api/notifications/`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            notifications = await response.json();
+            updateNotificationBadge();
+            displayNotifications();
+        }
+    } catch (error) {
+        console.error('Error loading notifications:', error);
+    }
+}
+
+function updateNotificationBadge() {
+    const unreadCount = notifications.filter(n => !n.is_read).length;
+    const badge = document.getElementById('notificationBadge');
+    
+    if (unreadCount > 0) {
+        badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+        badge.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function displayNotifications() {
+    const list = document.getElementById('notificationList');
+    
+    if (notifications.length === 0) {
+        list.innerHTML = `
+            <div class="no-notifications">
+                <div class="no-notifications-icon">🔔</div>
+                <p>No notifications yet</p>
+            </div>
+        `;
+        return;
+    }
+
+    list.innerHTML = notifications.map(notif => {
+        const icon = getNotificationIcon(notif.type);
+        const time = formatNotificationTime(notif.created_at);
+        
+        return `
+            <div class="notification-item ${notif.is_read ? '' : 'unread'}" 
+                 onclick="handleNotificationClick(${notif.id}, '${notif.type}', ${notif.related_id})">
+                <div class="notification-icon">${icon}</div>
+                <div class="notification-content">
+                    <div class="notification-title">${notif.title}</div>
+                    <div class="notification-message">${notif.message}</div>
+                    <div class="notification-time">${time}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        'dress_match': '🎉',
+        'message': '💬',
+        'booking': '🛍️',
+        'interest': '👥',
+        'request': '🔍'
+    };
+    return icons[type] || '🔔';
+}
+
+function formatNotificationTime(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = Math.floor((now - date) / 1000);
+
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+    
+    return date.toLocaleDateString();
+}
+
+async function handleNotificationClick(notificationId, type, relatedId) {
+    const token = localStorage.getItem('token');
+    
+    try {
+        await fetch(`${API_URL}/api/notifications/${notificationId}/read`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        await loadNotifications();
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+    }
+
+    if (type === 'dress_match' && relatedId) {
+        window.location.href = `/product-details?id=${relatedId}`;
+    } else if (type === 'message' && relatedId) {
+        window.location.href = `/messages?user_id=${relatedId}`;
+    } else if (type === 'booking' && relatedId) {
+        window.location.href = `/product-details?id=${relatedId}`;
+    } else if (type === 'interest' && relatedId) {
+        window.location.href = `/product-details?id=${relatedId}`;
+    }
+    
+    toggleNotifications();
+}
+
+async function markAllRead() {
+    const token = localStorage.getItem('token');
+    
+    try {
+        await fetch(`${API_URL}/api/notifications/mark-all-read`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        await loadNotifications();
+    } catch (error) {
+        console.error('Error marking all as read:', error);
+    }
+}
+
+function toggleNotifications() {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.classList.toggle('show');
+}
+
+document.addEventListener('click', function(event) {
+    const container = document.querySelector('.notification-container');
+    const dropdown = document.getElementById('notificationDropdown');
+    
+    if (container && !container.contains(event.target)) {
+        dropdown.classList.remove('show');
+    }
+});
+
+async function loadNavigationProfile() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+        const response = await fetch(`${API_URL}/api/profiles/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+            const userData = await response.json();
+            const profileIcon = document.getElementById('navProfileIcon');
+            
+            if (userData.profile_photo_url) {
+                const fullUrl = userData.profile_photo_url.startsWith('http') 
+                    ? userData.profile_photo_url 
+                    : `${API_URL}${userData.profile_photo_url}`;
+                
+                profileIcon.innerHTML = `<img src="${fullUrl}" alt="Profile" onerror="this.parentElement.innerHTML='👤'">`;
+            } else {
+                const initials = getInitials(userData.full_name || userData.username || '');
+                if (initials) {
+                    profileIcon.textContent = initials;
+                }
+            }
+            
+            if (userData.full_name || userData.username) {
+                profileIcon.title = `${userData.full_name || userData.username} - View Profile`;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading profile:', error);
+    }
+}
+
+function getInitials(name) {
+    if (!name) return '';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    } else if (parts.length === 1) {
+        return parts[0][0].toUpperCase();
+    }
+    return '';
+}
+
+async function loadProducts() {
+    try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+
+        console.log('Loading products...');
+        const response = await fetch(`${API_URL}/api/products/`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        console.log('Response status:', response.status);
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Products received:', data);
+            
+            allProducts = data;
+            filteredProducts = [...allProducts];
+            displayProducts();
+        } else {
+            console.error('Failed to load products:', response.status);
+            document.getElementById('productsGrid').innerHTML = `
+                <div class="no-products">
+                    <p style="font-size: 48px;">😕</p>
+                    <h3>Failed to load dresses</h3>
+                    <p>Status: ${response.status}. Please try refreshing the page</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error loading products:', error);
+        document.getElementById('productsGrid').innerHTML = `
+            <div class="no-products">
+                <p style="font-size: 48px;">⚠️</p>
+                <h3>Error loading dresses</h3>
+                <p>${error.message}</p>
+                <button onclick="loadProducts()" style="margin-top: 15px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">Try Again</button>
+            </div>
+        `;
+    }
+}
+
+function searchProducts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    if (!searchTerm) {
+        filteredProducts = [...allProducts];
+    } else {
+        filteredProducts = allProducts.filter(product => {
+            return product.name?.toLowerCase().includes(searchTerm) ||
+                   product.category?.toLowerCase().includes(searchTerm) ||
+                   product.description?.toLowerCase().includes(searchTerm) ||
+                   product.color?.toLowerCase().includes(searchTerm) ||
+                   product.owner_name?.toLowerCase().includes(searchTerm);
+        });
+    }
+    
+    applyFilters();
+}
+
+function applyFilters() {
+    const category = document.getElementById('categoryFilter').value;
+    const size = document.getElementById('sizeFilter').value;
+    const availability = document.getElementById('availabilityFilter').value;
+    const sort = document.getElementById('sortFilter').value;
+
+    let filtered = [...filteredProducts];
+
+    if (category) {
+        filtered = filtered.filter(p => p.category === category);
+    }
+
+    if (size) {
+        filtered = filtered.filter(p => p.size === size);
+    }
+
+    if (availability === 'available') {
+        filtered = filtered.filter(p => p.is_available);
+    } else if (availability === 'rented') {
+        filtered = filtered.filter(p => !p.is_available);
+    }
+
+    if (sort === 'price_low') {
+        filtered.sort((a, b) => (a.price_per_day || 0) - (b.price_per_day || 0));
+    } else if (sort === 'price_high') {
+        filtered.sort((a, b) => (b.price_per_day || 0) - (a.price_per_day || 0));
+    } else {
+        filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+
+    displayProducts(filtered);
+}
+function displayProducts(products = filteredProducts) {
+    const grid = document.getElementById('productsGrid');
+
+    if (products.length === 0) {
+        grid.innerHTML = `
+            <div class="no-products">
+                <p style="font-size: 64px;">👗</p>
+                <h3>No dresses found</h3>
+                <p>Try adjusting your search or filters!</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = products.map(product => {
+        let imageHtml;
+        if (product.image_url) {
+            const imageUrl = product.image_url.startsWith('http') 
+                ? product.image_url 
+                : `${API_URL}${product.image_url}`;
+            imageHtml = `<img src="${imageUrl}" 
+                              alt="${product.name}" 
+                              class="product-image"
+                              onerror="this.parentElement.innerHTML='<div class=\\'no-image-placeholder\\'>👗</div>'">`;
+        } else {
+            imageHtml = `<div class="no-image-placeholder">👗</div>`;
+        }
+
+        return `
+            <div class="product-card" onclick="viewProduct(${product.id})">
+                <div class="product-image-container">
+                    ${imageHtml}
+                </div>
+                
+                <div class="product-info">
+                    <div class="product-name">${product.name || 'Untitled Dress'}</div>
+                    <div class="product-owner">👤 ${product.owner_username || 'Unknown Owner'}</div>
+                    
+                    <div class="product-details">
+                        <span>📏 ${product.size || 'N/A'}</span>
+                        <span>🎨 ${product.color || 'N/A'}</span>
+                    </div>
+                    
+                    <div class="product-details">
+                        <span>📦 ${product.category || 'Dress'}</span>
+                    </div>
+                    
+                    <div class="product-price">₹${product.price_per_day || 0}/day</div>
+                    
+                    <span class="availability-badge ${product.is_available ? 'available' : 'not-available'}">
+                        ${product.is_available ? '✓ Available' : '✗ Rented'}
+                    </span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function viewProduct(id) {
+    window.location.href = `/product-details?id=${id}`;
+}
+
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+    }
+}
+
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        loadProducts();
+        loadNotifications();
+    }
+});
+
+window.onload = () => {
+    loadNavigationProfile();
+    loadProducts();
+    loadNotifications();
+    
+    setInterval(loadNotifications, 30000);
+    
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchProducts();
+        }
+    });
+};
+    </script>
+</body>
+</html>

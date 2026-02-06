@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Requests - DressRent</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        .requests-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #ff6b9d;
+            background: white;
+            color: #ff6b9d;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #ff6b9d;
+            color: white;
+        }
+        
+        .requests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .request-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .request-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        
+        .request-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-fulfilled {
+            background: #d4edda;
+            color: #155724;
+        }
+        .profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+    overflow: hidden;
+    border: 2px solid #667eea;
+}
+
+.profile-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1);
+}
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .request-info {
+            margin: 15px 0;
+        }
+        
+        .info-row {
+            display: flex;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            width: 120px;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        .request-description {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .request-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .requester-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .request-date {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            background: #ff6b9d;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #ff4081;
+        }
+        
+        .no-requests {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .no-requests i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h2>👗 DressRent</h2>
+        </div>
+        <div class="nav-links">
+            <a href="/products">🏠 All Dresses</a>
+            <a href="/add-dress">➕ Upload Dress</a>
+            <a href="/my-dresses">📦 My Uploads</a>
+            <a href="/customer-requests" class="active">🔍 Customer Requests</a>
+            <a href="/my-requests">📝 My Requests</a>
+            <a href="#" onclick="logout()">🚪 Logout</a>
+        </div>
+    </nav>
+
+    <div class="requests-container">
+        <div class="page-header">
+            <h1>🔍 Customer Dress Requests</h1>
+            <p>See what customers are looking for and help them find their perfect dress!</p>
+        </div>
+
+        <div class="filter-section">
+            <button class="filter-btn active" onclick="filterRequests('all')">All Requests</button>
+            <button class="filter-btn" onclick="filterRequests('pending')">Pending</button>
+            <button class="filter-btn" onclick="filterRequests('fulfilled')">Fulfilled</button>
+            <button class="filter-btn" onclick="filterRequests('cancelled')">Cancelled</button>
+        </div>
+
+        <div class="requests-grid" id="requestsGrid">
+            <div class="no-requests">
+                <p>Loading requests...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allRequests = [];
+        let currentFilter = 'all';
+
+        async function loadRequests() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/requests/all', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    allRequests = await response.json();
+                    displayRequests();
+                } else {
+                    console.error('Failed to load requests');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function filterRequests(status) {
+            currentFilter = status;
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displayRequests();
+        }
+
+        function displayRequests() {
+            const grid = document.getElementById('requestsGrid');
+            
+            let filteredRequests = allRequests;
+            if (currentFilter !== 'all') {
+                filteredRequests = allRequests.filter(req => req.status === currentFilter);
+            }
+
+            if (filteredRequests.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-requests">
+                        <p style="font-size: 48px;">🔍</p>
+                        <h3>No ${currentFilter === 'all' ? '' : currentFilter} requests found</h3>
+                        <p>Check back later for customer requests!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredRequests.map(request => `
+                <div class="request-card">
+                    <div class="request-header">
+                        <div>
+                            <div class="request-title">${request.dress_type}</div>
+                            <div class="requester-info">Requested by: ${request.username || 'Anonymous'}</div>
+                        </div>
+                        <span class="status-badge status-${request.status}">${request.status}</span>
+                    </div>
+
+                    <div class="request-info">
+                        ${request.occasion ? `
+                            <div class="info-row">
+                                <span class="info-label">Occasion:</span>
+                                <span class="info-value">${request.occasion}</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${request.size ? `
+                            <div class="info-row">
+                                <span class="info-label">Size:</span>
+                                <span class="info-value">${request.size}</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${request.color ? `
+                            <div class="info-row">
+                                <span class="info-label">Color:</span>
+                                <span class="info-value">${request.color}</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${request.budget_min && request.budget_max ? `
+                            <div class="info-row">
+                                <span class="info-label">Budget:</span>
+                                <span class="info-value">₹${request.budget_min} - ₹${request.budget_max}</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${request.rental_start_date ? `
+                            <div class="info-row">
+                                <span class="info-label">Date Needed:</span>
+                                <span class="info-value">${new Date(request.rental_start_date).toLocaleDateString()}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    ${request.description ? `
+                        <div class="request-description">
+                            <strong>Details:</strong><br>
+                            ${request.description}
+                        </div>
+                    ` : ''}
+
+                    <div class="request-footer">
+                        <span class="request-date">${new Date(request.created_at).toLocaleDateString()}</span>
+                        ${request.status === 'pending' ? `
+                            <button class="action-btn" onclick="window.location.href='/add-dress'">
+                                Upload Matching Dress
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+
+         async function loadNavigationProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/users/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    const profileIcon = document.getElementById('navProfileIcon');
+                    
+                    if (userData.profile_photo_url) {
+                        profileIcon.innerHTML = `<img src="${API_URL}${userData.profile_photo_url}" alt="Profile">`;
+                    }
+                    
+                    if (userData.full_name || userData.username) {
+                        profileIcon.title = `${userData.full_name || userData.username} - View Profile`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+        
+        /* UPDATE THIS: Add call to loadNavigationProfile */
+        window.onload = () => {
+            checkAuth();
+            loadNavigationProfile();  // ADD THIS LINE
+            // ... other init code
+        };
+
+        // Load requests on page load
+        window.onload = loadRequests;
+    </script>
+</body>
+</html>

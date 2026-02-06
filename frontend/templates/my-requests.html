@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Requests - DressRent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-content h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .nav-bar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .create-request-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .create-request-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .requests-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .request-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .dress-type {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        .status-pending, .status-open {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-fulfilled {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-closed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .delete-request-btn {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .delete-request-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+        
+        .request-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .detail-item {
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-size: 15px;
+        }
+
+        .loading-state, .empty-state, .error-state {
+            background: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .loading-state {
+            padding: 60px 20px;
+        }
+
+        .empty-state h3, .error-state h3 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p, .error-state p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .matching-dresses-section {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #10b981;
+        }
+
+        .matching-dresses-section h3 {
+            color: #065f46;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .matching-dress-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .matching-dress-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .matching-dress-info {
+            flex: 1;
+        }
+
+        .matching-dress-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .matching-dress-info p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .view-dress-btn {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .view-dress-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .new-match-indicator {
+            background: #ef4444;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .submit-btn {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .cancel-btn {
+            flex: 1;
+            padding: 12px;
+            background: #e5e7eb;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>📝 My Dress Requests</h1>
+                <p>Dresses you're looking for</p>
+            </div>
+            <button class="create-request-btn" onclick="openRequestModal()">
+                ➕ New Request
+            </button>
+        </div>
+
+        <div class="nav-bar">
+            <a href="/products" class="nav-btn">🏠 All Dresses</a>
+            <a href="/add-dress" class="nav-btn">➕ Upload Dress</a>
+            <a href="/customer-requests" class="nav-btn">🔍 Customer Requests</a>
+            <a href="/my-requests" class="nav-btn">📝 My Requests</a>
+            <button onclick="logout()" class="nav-btn">🚪 Logout</button>
+        </div>
+
+        <div id="requestsList" class="requests-list">
+            <div class="loading-state">
+                <div style="font-size: 48px; margin-bottom: 20px;">🔄</div>
+                <p style="color: #666; font-size: 18px;">Loading your requests...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Request Modal -->
+    <div id="requestModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Create Dress Request</h2>
+            <form id="requestForm">
+                <div class="form-group">
+                    <label>Dress Type *</label>
+                    <input type="text" id="dressType" placeholder="e.g., Wedding Dress, Party Dress" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" placeholder="Describe what you're looking for..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Size</label>
+                    <select id="size">
+                        <option value="">Select Size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Color Preference</label>
+                    <input type="text" id="color" placeholder="e.g., Red, Blue, Any">
+                </div>
+                
+                <div class="form-group">
+                    <label>Occasion</label>
+                    <input type="text" id="occasion" placeholder="e.g., Wedding, Party, Formal Event">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Min Budget (₹)</label>
+                        <input type="number" id="budgetMin" placeholder="500">
+                    </div>
+                    <div class="form-group">
+                        <label>Max Budget (₹)</label>
+                        <input type="number" id="budgetMax" placeholder="5000">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Needed By Date</label>
+                    <input type="date" id="neededBy">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Submit Request</button>
+                    <button type="button" class="cancel-btn" onclick="closeRequestModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let token = localStorage.getItem('token');
+
+        if (!token) {
+            window.location.href = '/login';
+        }
+
+        function openRequestModal() {
+            document.getElementById('requestModal').style.display = 'flex';
+        }
+
+        function closeRequestModal() {
+            document.getElementById('requestModal').style.display = 'none';
+            document.getElementById('requestForm').reset();
+        }
+
+        document.getElementById('requestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const requestData = {
+                dress_type: document.getElementById('dressType').value,
+                description: document.getElementById('description').value || null,
+                size: document.getElementById('size').value || null,
+                color: document.getElementById('color').value || null,
+                occasion: document.getElementById('occasion').value || null,
+                budget_min: parseFloat(document.getElementById('budgetMin').value) || null,
+                budget_max: parseFloat(document.getElementById('budgetMax').value) || null,
+                rental_start_date: document.getElementById('neededBy').value || null
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/requests/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    alert('Session expired. Please login again.');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                if (response.ok) {
+                    alert('✅ Request created! Dress owners will be notified.');
+                    closeRequestModal();
+                    loadMyRequests();
+                } else {
+                    alert('❌ Failed to create request');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error creating request');
+            }
+        });
+
+        async function loadMatchingDresses(requestId) {
+            try {
+                const response = await fetch(`${API_URL}/api/requests/${requestId}/matches`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    return await response.json();
+                }
+                return [];
+            } catch (error) {
+                console.error('Error loading matches:', error);
+                return [];
+            }
+        }
+
+        async function deleteRequest(requestId) {
+            if (!confirm('🗑️ Are you sure you want to delete this request?\n\nThis action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/requests/${requestId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    alert('Session expired. Please login again.');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                if (response.ok) {
+                    alert('✅ Request deleted successfully!');
+                    loadMyRequests();
+                } else {
+                    const error = await response.json();
+                    alert('❌ Failed to delete request: ' + (error.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error deleting request:', error);
+                alert('❌ Error deleting request. Please try again.');
+            }
+        }
+
+        async function loadMyRequests() {
+            const container = document.getElementById('requestsList');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/requests/my-requests`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    alert('Session expired. Please login again.');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch requests');
+                }
+
+                const requests = await response.json();
+                console.log('All requests:', requests);
+
+                const activeRequests = requests.filter(r => r.status !== 'fulfilled');
+                console.log('Active requests (filtered):', activeRequests);
+
+                if (activeRequests.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div style="font-size: 64px; margin-bottom: 20px;">📝</div>
+                            <h3>No Active Requests</h3>
+                            <p>You haven't created any dress requests yet.<br>
+                            Create a request to let dress owners know what you're looking for!</p>
+                            <button onclick="openRequestModal()" style="
+                                padding: 15px 40px;
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                color: white;
+                                border: none;
+                                border-radius: 30px;
+                                font-weight: 700;
+                                cursor: pointer;
+                                font-size: 16px;
+                                transition: transform 0.3s;
+                            " onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                                ➕ Create New Request
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const requestsWithMatches = await Promise.all(
+                    activeRequests.map(async (req) => {
+                        const matches = await loadMatchingDresses(req.id);
+                        return { ...req, matches };
+                    })
+                );
+
+                container.innerHTML = requestsWithMatches.map(req => {
+                    const hasNewMatches = req.matches && req.matches.length > 0;
+                    
+                    return `
+                    <div class="request-card" style="position: relative;">
+                        ${hasNewMatches ? '<div class="notification-badge">' + req.matches.length + '</div>' : ''}
+                        
+                        <div class="request-header">
+                            <div class="dress-type">${req.dress_type}</div>
+                            <div class="header-right">
+                                <span class="status-badge status-${req.status}">${req.status.toUpperCase()}</span>
+                                <button class="delete-request-btn" onclick="deleteRequest(${req.id})">
+                                    🗑️ Delete Request
+                                </button>
+                            </div>
+                        </div>
+                        
+                        ${req.description ? `
+                            <div style="background: #f0f4ff; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                                <em>${req.description}</em>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="request-details">
+                            ${req.size ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Size</div>
+                                    <div class="detail-value">${req.size}</div>
+                                </div>
+                            ` : ''}
+                            ${req.color ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Color</div>
+                                    <div class="detail-value">${req.color}</div>
+                                </div>
+                            ` : ''}
+                            ${req.occasion ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Occasion</div>
+                                    <div class="detail-value">${req.occasion}</div>
+                                </div>
+                            ` : ''}
+                            ${req.budget_min || req.budget_max ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Budget</div>
+                                    <div class="detail-value">₹${req.budget_min || 0} - ₹${req.budget_max || 'Any'}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        ${hasNewMatches ? `
+                            <div class="matching-dresses-section">
+                                <h3>
+                                    🎉 ${req.matches.length} Matching ${req.matches.length === 1 ? 'Dress' : 'Dresses'} Found!
+                                    <span class="new-match-indicator">NEW</span>
+                                </h3>
+                                ${req.matches.map(match => `
+                                    <div class="matching-dress-card">
+                                        ${match.image_url ? `
+                                            <img src="${API_URL}${match.image_url}" 
+                                                 alt="${match.name}" 
+                                                 class="matching-dress-image"
+                                                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22>No Image</text></svg>'">
+                                        ` : ''}
+                                        <div class="matching-dress-info">
+                                            <h4>${match.name}</h4>
+                                            <p><strong>Owner:</strong> ${match.owner_name}</p>
+                                            <p><strong>Price:</strong> ₹${match.price_per_day}/day</p>
+                                            <p><strong>Size:</strong> ${match.size} | <strong>Color:</strong> ${match.color}</p>
+                                        </div>
+                                        <button class="view-dress-btn" onclick="viewDress(${match.id})">
+                                            View Details
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <small style="color: #999;">Created: ${new Date(req.created_at).toLocaleDateString()}</small>
+                    </div>
+                `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = `
+                    <div class="error-state">
+                        <div style="font-size: 64px; margin-bottom: 20px;">❌</div>
+                        <h3>Error Loading Requests</h3>
+                        <p>${error.message}</p>
+                        <button onclick="loadMyRequests()" style="
+                            padding: 15px 40px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 30px;
+                            font-weight: 700;
+                            cursor: pointer;
+                            font-size: 16px;
+                        ">
+                            🔄 Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function viewDress(dressId) {
+            window.location.href = `/product-details?id=${dressId}`;
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
+        }
+
+        window.onload = () => {
+            loadMyRequests();
+        };
+    </script>
+</body>
+</html>

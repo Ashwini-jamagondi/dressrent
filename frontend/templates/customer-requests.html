@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Requests - DressRent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+            border: 2px solid #667eea;
+            flex-shrink: 0;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .nav-bar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .requests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+        }
+        
+        .request-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .request-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+        }
+        
+        .request-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .dress-type {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .customer-info {
+            background: linear-gradient(135deg, #e0e7ff, #ddd6fe);
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .customer-icon {
+            font-size: 24px;
+        }
+        
+        .customer-name {
+            font-weight: bold;
+            color: #4c1d95;
+        }
+        
+        .request-details {
+            margin: 15px 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            width: 140px;
+            flex-shrink: 0;
+        }
+        
+        .detail-value {
+            color: #333;
+            flex: 1;
+        }
+        
+        .description-box {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            color: #555;
+            font-style: italic;
+            border-left: 4px solid #667eea;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .upload-btn {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .contact-btn {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .contact-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+        }
+        
+        .empty-state h3 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👗 Customer Requests</h1>
+            <p>See what customers are looking for and upload matching dresses!</p>
+        </div>
+
+        <div class="nav-bar">
+            <a href="/products" class="nav-btn">🏠 All Dresses</a>
+            <a href="/add-dress" class="nav-btn">➕ Upload Dress</a>
+            <a href="/my-dresses" class="nav-btn">📦 My Uploads</a>
+            <a href="/customer-requests" class="nav-btn">🔍 Customer Requests</a>
+            <a href="/my-requests" class="nav-btn">📝 My Requests</a>
+            <a href="/my-rentals" class="nav-btn">🛍️ My Rentals</a>
+            <div class="profile-icon" id="navProfileIcon" title="My Profile" onclick="window.location.href='/profile'">👤</div>
+            <button onclick="logout()" class="nav-btn">🚪 Logout</button>
+        </div>
+
+        <div id="loading" class="loading">Loading requests...</div>
+        <div id="requestsContainer" class="requests-grid" style="display: none;"></div>
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h3>📭 No Active Requests</h3>
+            <p>There are currently no customer requests. Check back later!</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let token = localStorage.getItem('token');
+
+        if (!token) {
+            window.location.href = '/login';
+        }
+
+        async function loadNavigationProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/profiles/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    const profileIcon = document.getElementById('navProfileIcon');
+                    
+                    if (userData.profile_photo_url) {
+                        const fullUrl = userData.profile_photo_url.startsWith('http') 
+                            ? userData.profile_photo_url 
+                            : `${API_URL}${userData.profile_photo_url}`;
+                        
+                        profileIcon.innerHTML = `<img src="${fullUrl}" alt="Profile" onerror="this.parentElement.innerHTML='👤'">`;
+                    } else {
+                        const initials = getInitials(userData.full_name || userData.username || '');
+                        if (initials) {
+                            profileIcon.textContent = initials;
+                        }
+                    }
+                    
+                    if (userData.full_name || userData.username) {
+                        profileIcon.title = `${userData.full_name || userData.username} - View Profile`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        function getInitials(name) {
+            if (!name) return '';
+            const parts = name.trim().split(' ');
+            if (parts.length >= 2) {
+                return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+            } else if (parts.length === 1) {
+                return parts[0][0].toUpperCase();
+            }
+            return '';
+        }
+       
+        async function loadRequests() {
+            try {
+                const response = await fetch(`${API_URL}/api/requests/all`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    alert('Session expired. Please login again.');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                if (!response.ok) throw new Error('Failed to load');
+
+                const requests = await response.json();
+                
+                console.log('Loaded requests:', requests);
+                
+                document.getElementById('loading').style.display = 'none';
+                
+                if (requests.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('requestsContainer').style.display = 'grid';
+                document.getElementById('requestsContainer').innerHTML = requests.map(req => {
+                    // The customer who made the request
+                    const customerName = req.username || req.customer_name || req.requester_name || 'Unknown User';
+                    // The ID of the customer who made the request (NOT the dress owner)
+                    const customerId = req.requester_id || req.customer_id || req.user_id;
+                    
+                    return `
+                        <div class="request-card">
+                            <div class="request-header">
+                                <div class="dress-type">${req.dress_type || 'Dress Request'}</div>
+                                <span class="status-badge">${(req.status || 'PENDING').toUpperCase()}</span>
+                            </div>
+
+                            <div class="customer-info">
+                                <span class="customer-icon">👤</span>
+                                <div>
+                                    <div class="customer-name">${customerName}</div>
+                                    <small style="color: #666;">Looking for this dress</small>
+                                </div>
+                            </div>
+
+                            ${req.description ? `
+                                <div class="description-box">
+                                    "${req.description}"
+                                </div>
+                            ` : ''}
+
+                            <div class="request-details">
+                                ${req.size ? `
+                                    <div class="detail-row">
+                                        <span class="detail-label">📏 Size:</span>
+                                        <span class="detail-value">${req.size}</span>
+                                    </div>
+                                ` : ''}
+                                ${req.color_preference ? `
+                                    <div class="detail-row">
+                                        <span class="detail-label">🎨 Color:</span>
+                                        <span class="detail-value">${req.color_preference}</span>
+                                    </div>
+                                ` : ''}
+                                ${req.occasion ? `
+                                    <div class="detail-row">
+                                        <span class="detail-label">🎉 Occasion:</span>
+                                        <span class="detail-value">${req.occasion}</span>
+                                    </div>
+                                ` : ''}
+                                ${req.budget_min || req.budget_max ? `
+                                    <div class="detail-row">
+                                        <span class="detail-label">💰 Budget:</span>
+                                        <span class="detail-value">₹${req.budget_min || 0} - ₹${req.budget_max || 'Any'}</span>
+                                    </div>
+                                ` : ''}
+                                ${req.needed_by_date ? `
+                                    <div class="detail-row">
+                                        <span class="detail-label">📅 Needed By:</span>
+                                        <span class="detail-value">${new Date(req.needed_by_date).toLocaleDateString()}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <div class="actions">
+                                <button class="upload-btn" onclick="window.location.href='/add-dress'">
+                                    ⬆️ Upload Matching Dress
+                                </button>
+                                <button class="contact-btn" onclick="contactCustomer(${customerId}, '${customerName.replace(/'/g, "\\'")}')">
+                                    💬 Message
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = 'Error loading requests. Please try again.';
+            }
+        }
+
+        function contactCustomer(customerId, customerName) {
+            if (!customerId) {
+                alert('Unable to message this customer. User ID not available.');
+                return;
+            }
+            
+            // Redirect to messages page with user_id parameter
+            window.location.href = `/messages?user_id=${customerId}`;
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
+        }
+
+        window.onload = () => {
+            loadNavigationProfile();
+            loadRequests();
+        };
+    </script>
+</body>
+</html>

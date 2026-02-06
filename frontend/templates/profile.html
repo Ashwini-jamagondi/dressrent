@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - DressRent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        nav {
+            background: white;
+            padding: 1rem 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links { 
+            display: flex; 
+            gap: 2rem; 
+            align-items: center; 
+        }
+        
+        .nav-links a { 
+            text-decoration: none; 
+            color: #667eea; 
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px solid #667eea;
+            flex-shrink: 0;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .profile-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .profile-photo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .profile-photo-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            overflow: hidden;
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid white;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .camera-icon:hover {
+            background: #5568d3;
+            transform: scale(1.1);
+        }
+
+        #photoInput {
+            display: none;
+        }
+
+        .upload-hint {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+            color: #667eea;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        input[readonly] {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #28a745;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #dc3545;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">👗 DressRent</div>
+        <div class="nav-links">
+            <a href="/products">Browse</a>
+            <a href="/my-dresses">My Listings</a>
+            <a href="/add-dress">Add Dress</a>
+            <a href="/customer-requests">Requests</a>
+            <div class="profile-icon" id="navProfileIcon" title="View Profile">
+                👤
+            </div>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </nav>
+
+    <div id="loadingIndicator" class="loading">Loading profile...</div>
+
+    <div class="container" id="profileContainer" style="display: none;">
+        <div class="profile-box">
+            <h1>👤 My Profile</h1>
+
+            <div id="message"></div>
+
+            <!-- Profile Photo Section -->
+            <div class="profile-photo-section">
+                <div class="profile-photo-container">
+                    <div class="profile-photo" id="profilePhoto">
+                        👤
+                    </div>
+                    <div class="camera-icon" onclick="document.getElementById('photoInput').click()" title="Change photo">
+                        📸
+                    </div>
+                </div>
+                <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)">
+                <p class="upload-hint">Click on the camera icon to change your profile picture</p>
+            </div>
+
+            <!-- Personal Details Form -->
+            <form id="profileForm">
+                <div class="section-title">📝 Personal Details</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required readonly placeholder="your@email.com">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="+91 1234567890">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="City, State">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" placeholder="Enter your address"></textarea>
+                </div>
+
+                <button type="submit" class="btn" id="saveBtn">💾 Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let currentProfilePhotoUrl = null;
+
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please login first');
+                window.location.href = '/login';
+                return false;
+            }
+            return true;
+        }
+
+        async function loadProfile() {
+            if (!checkAuth()) return;
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`${API_URL}/api/profiles/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                console.log('Profile response status:', response.status);
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    alert('Session expired. Please login again.');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                if (response.ok) {
+                    const profile = await response.json();
+                    
+                    // Hide loading, show profile
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                    document.getElementById('profileContainer').style.display = 'block';
+                    
+                    // Populate form
+                    document.getElementById('fullName').value = profile.full_name || '';
+                    document.getElementById('email').value = profile.email || '';
+                    document.getElementById('phone').value = profile.phone || '';
+                    document.getElementById('location').value = profile.location || '';
+                    document.getElementById('address').value = profile.address || '';
+
+                    // Load profile photo
+                    if (profile.profile_photo_url) {
+                        currentProfilePhotoUrl = profile.profile_photo_url;
+                        displayProfilePhoto(profile.profile_photo_url);
+                    } else {
+                        // Set default icon with user initials if available
+                        const initials = getInitials(profile.full_name || profile.username || '');
+                        if (initials) {
+                            document.getElementById('profilePhoto').textContent = initials;
+                            document.getElementById('navProfileIcon').textContent = initials;
+                        }
+                    }
+                } else {
+                    document.getElementById('loadingIndicator').innerHTML = 
+                        '<div style="color: white; text-align: center;">Failed to load profile. <a href="/products" style="color: white;">Go back</a></div>';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('loadingIndicator').innerHTML = 
+                    '<div style="color: white; text-align: center;">Network error. <a href="/products" style="color: white;">Go back</a></div>';
+            }
+        }
+
+        function getInitials(name) {
+            if (!name) return '';
+            const parts = name.trim().split(' ');
+            if (parts.length >= 2) {
+                return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+            } else if (parts.length === 1) {
+                return parts[0][0].toUpperCase();
+            }
+            return '';
+        }
+
+        function displayProfilePhoto(photoUrl) {
+            if (!photoUrl) return;
+            
+            const fullUrl = photoUrl.startsWith('http') ? photoUrl : `${API_URL}${photoUrl}`;
+            const profilePhoto = document.getElementById('profilePhoto');
+            const navIcon = document.getElementById('navProfileIcon');
+            
+            profilePhoto.innerHTML = `<img src="${fullUrl}" alt="Profile" onerror="this.parentElement.innerHTML='👤'">`;
+            navIcon.innerHTML = `<img src="${fullUrl}" alt="Profile" onerror="this.parentElement.innerHTML='👤'">`;
+            
+            // Store in localStorage for quick access
+            localStorage.setItem('profile_photo_url', photoUrl);
+        }
+
+        async function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB');
+                event.target.value = '';
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                event.target.value = '';
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+            const messageDiv = document.getElementById('message');
+
+            // Show preview immediately
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('profilePhoto').innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                document.getElementById('navProfileIcon').innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+
+            // Upload
+            const formData = new FormData();
+            formData.append('photo', file);
+
+            try {
+                messageDiv.innerHTML = '<div class="success">⏳ Uploading photo...</div>';
+
+                const response = await fetch(`${API_URL}/api/profiles/photo`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                console.log('Photo upload status:', response.status);
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    alert('Session expired. Please login again.');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.innerHTML = '<div class="success">✅ Profile photo updated successfully!</div>';
+                    currentProfilePhotoUrl = data.photo_url || data.profile_photo_url;
+                    displayProfilePhoto(currentProfilePhotoUrl);
+                    
+                    setTimeout(() => {
+                        messageDiv.innerHTML = '';
+                    }, 3000);
+                } else {
+                    messageDiv.innerHTML = `<div class="error">❌ ${data.detail || 'Failed to upload photo'}</div>`;
+                    // Reload original photo on error
+                    if (currentProfilePhotoUrl) {
+                        displayProfilePhoto(currentProfilePhotoUrl);
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.innerHTML = '<div class="error">❌ Network error. Please try again.</div>';
+                // Reload original photo on error
+                if (currentProfilePhotoUrl) {
+                    displayProfilePhoto(currentProfilePhotoUrl);
+                }
+            }
+
+            event.target.value = '';
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const token = localStorage.getItem('token');
+            const messageDiv = document.getElementById('message');
+            const saveBtn = document.getElementById('saveBtn');
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Saving...';
+
+            const profileData = {
+                full_name: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value || null,
+                location: document.getElementById('location').value || null,
+                address: document.getElementById('address').value || null
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/profiles/me`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                console.log('Profile update status:', response.status);
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    alert('Session expired. Please login again.');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                if (response.ok) {
+                    messageDiv.innerHTML = '<div class="success">✅ Profile updated successfully!</div>';
+                    
+                    // Update nav icon with initials if name changed
+                    const initials = getInitials(profileData.full_name);
+                    if (initials && !currentProfilePhotoUrl) {
+                        document.getElementById('navProfileIcon').textContent = initials;
+                    }
+                    
+                    setTimeout(() => {
+                        messageDiv.innerHTML = '';
+                    }, 3000);
+                } else {
+                    const data = await response.json();
+                    messageDiv.innerHTML = `<div class="error">❌ ${data.detail || 'Failed to update profile'}</div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.innerHTML = '<div class="error">❌ Network error. Please try again.</div>';
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Save Changes';
+            }
+        });
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('profile_photo_url');
+                window.location.href = '/login';
+            }
+        }
+
+        // Initialize on page load
+        window.onload = () => {
+            loadProfile();
+        };
+    </script>
+</body>
+</html>

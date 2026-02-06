@@ -1,0 +1,50 @@
+
+# Python
+@"
+__pycache__/
+*.py[cod]
+*`$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+.pytest_cache/
+
+# Database
+*.db
+*.sqlite3
+*.db-journal
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Uploads
+uploads/
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Build
+build/
+dist/
+.dist/
+"@ | Out-File -FilePath .gitignore -Encoding utf8

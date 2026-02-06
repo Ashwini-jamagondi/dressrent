@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Your Dress - DressRent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        nav {
+            background: white;
+            padding: 1rem 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { 
+            text-decoration: none; 
+            color: #667eea; 
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border 0.3s;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+            border: 2px solid #667eea;
+            flex-shrink: 0;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .image-upload-container {
+            border: 3px dashed #e0e0e0;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9f9f9;
+            position: relative;
+        }
+
+        .image-upload-container:hover {
+            border-color: #667eea;
+            background: #f5f7ff;
+        }
+
+        .image-upload-container.has-image {
+            border-style: solid;
+            border-color: #667eea;
+            padding: 0;
+            background: transparent;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .upload-placeholder {
+            color: #999;
+        }
+
+        #imagePreview {
+            display: none;
+            position: relative;
+        }
+
+        #imagePreview img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 15px;
+            background: #f5f5f5;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .remove-image:hover {
+            background: rgba(255, 0, 0, 1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #c33;
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #3c3;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">👗 DressRent</div>
+        <div class="nav-links">
+            <a href="/products">Browse</a>
+            <a href="/my-dresses">My Listings</a>
+            <a href="/add-dress">Add Dress</a>
+            <a href="/customer-requests">Requests</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-box">
+            <h2>📸 List Your Dress for Rent</h2>
+            
+            <div id="message"></div>
+
+            <form id="addDressForm">
+                <div class="form-group">
+                    <label>Dress Image</label>
+                    <div class="image-upload-container" id="imageUploadContainer" onclick="document.getElementById('imageInput').click()">
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+                            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Click to upload dress image</p>
+                            <p style="font-size: 0.9rem; color: #999;">JPG, PNG, GIF (Max 5MB)</p>
+                        </div>
+                        <div id="imagePreview">
+                            <img id="previewImg" src="" alt="Preview">
+                            <button type="button" class="remove-image" onclick="event.stopPropagation(); removeImage()">✕ Remove</button>
+                        </div>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)">
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Dress Title *</label>
+                    <input type="text" id="name" required placeholder="e.g., Designer Red Saree">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" placeholder="Describe your dress, its features, occasions..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Saree">Saree</option>
+                            <option value="Lehenga">Lehenga</option>
+                            <option value="Gown">Gown</option>
+                            <option value="Anarkali">Anarkali</option>
+                            <option value="Salwar Kameez">Salwar Kameez</option>
+                            <option value="Kurti">Kurti</option>
+                            <option value="Churidar">Churidar</option>
+                            <option value="Indo-Western">Indo-Western</option>
+                            <option value="Sharara">Sharara</option>
+                            <option value="Gharara">Gharara</option>
+                            <option value="Palazzo Suit">Palazzo Suit</option>
+                            <option value="Kaftan">Kaftan</option>
+                            <option value="Jumpsuit">Jumpsuit</option>
+                            <option value="Cocktail Dress">Cocktail Dress</option>
+                            <option value="Party Dress">Party Dress</option>
+                            <option value="Wedding Dress">Wedding Dress</option>
+                            <option value="Maxi Dress">Maxi Dress</option>
+                            <option value="Traditional">Traditional</option>
+                            <option value="Western">Western</option>
+                            <option value="Ethnic Wear">Ethnic Wear</option>
+                            <option value="Bridal Wear">Bridal Wear</option>
+                            <option value="Designer Wear">Designer Wear</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="size">Size *</label>
+                        <select id="size" required>
+                            <option value="">Select Size</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="Free Size">Free Size</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="color">Color *</label>
+                        <input type="text" id="color" required placeholder="e.g., Red, Blue">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" id="brand" placeholder="e.g., Manish Malhotra">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Price per Day (₹) *</label>
+                        <input type="number" id="price" required min="1" placeholder="e.g., 500">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deposit">Security Deposit (₹) *</label>
+                        <input type="number" id="deposit" required min="0" placeholder="e.g., 2000">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="condition">Condition *</label>
+                        <select id="condition" required>
+                            <option value="">Select Condition</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Like New">Like New</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="e.g., Mumbai, Maharashtra">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">📤 List Dress for Rent</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let selectedImage = null;
+
+        async function loadNavigationProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/users/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    const profileIcon = document.getElementById('navProfileIcon');
+                    
+                    if (profileIcon && userData.profile_photo_url) {
+                        profileIcon.innerHTML = `<img src="${API_URL}${userData.profile_photo_url}" alt="Profile">`;
+                    }
+                    
+                    if (profileIcon && (userData.full_name || userData.username)) {
+                        profileIcon.title = `${userData.full_name || userData.username} - View Profile`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No token found');
+                alert('Please login first');
+                window.location.href = '/login';
+                return false;
+            }
+            console.log('✅ Auth check passed');
+            return true;
+        }
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB');
+                event.target.value = '';
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                event.target.value = '';
+                return;
+            }
+
+            selectedImage = file;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('uploadPlaceholder').style.display = 'none';
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('imageUploadContainer').classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            selectedImage = null;
+            document.getElementById('imageInput').value = '';
+            document.getElementById('uploadPlaceholder').style.display = 'block';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageUploadContainer').classList.remove('has-image');
+        }
+
+        document.getElementById('addDressForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!checkAuth()) return;
+
+            const messageDiv = document.getElementById('message');
+            const submitBtn = document.getElementById('submitBtn');
+            const token = localStorage.getItem('token');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Uploading...';
+            messageDiv.innerHTML = '';
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('size', document.getElementById('size').value);
+            formData.append('color', document.getElementById('color').value);
+            formData.append('brand', document.getElementById('brand').value || '');
+            formData.append('price_per_day', document.getElementById('price').value);
+            formData.append('security_deposit', document.getElementById('deposit').value);
+            formData.append('condition', document.getElementById('condition').value);
+            formData.append('location', document.getElementById('location').value || '');
+            formData.append('is_available', 'true');
+            
+            if (selectedImage) {
+                formData.append('image', selectedImage);
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    messageDiv.innerHTML = '<div class="error">❌ Session expired. Please login again.</div>';
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.innerHTML = '<div class="success">✅ Dress listed successfully! Redirecting...</div>';
+                    setTimeout(() => {
+                        window.location.href = '/my-dresses';
+                    }, 2000);
+                } else {
+                    let errorMsg = 'Failed to list dress';
+                    if (data.detail) {
+                        if (Array.isArray(data.detail)) {
+                            errorMsg = data.detail.map(err => {
+                                const field = err.loc ? err.loc.join('.') : 'Field';
+                                return `${field}: ${err.msg}`;
+                            }).join('<br>');
+                        } else {
+                            errorMsg = data.detail;
+                        }
+                    }
+                    messageDiv.innerHTML = `<div class="error">❌ ${errorMsg}</div>`;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '📤 List Dress for Rent';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.innerHTML = '<div class="error">❌ Network error. Please check your connection and try again.</div>';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 List Dress for Rent';
+            }
+        });
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
+        }
+
+        window.onload = () => {
+            checkAuth();
+            loadNavigationProfile(); 
+        };
+    </script>
+</body>
+</html>

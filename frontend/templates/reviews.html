@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - DressRent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; }
+
+        nav {
+            background: white;
+            padding: 1rem 3rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: #333; font-weight: 500; }
+
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+
+        .review-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+
+        .review-date {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .review-text {
+            color: #333;
+            line-height: 1.6;
+            margin-top: 1rem;
+        }
+
+        .add-review-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+        .profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+    overflow: hidden;
+    border: 2px solid #667eea;
+}
+
+.profile-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1);
+}
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 550px;
+            width: 90%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .rating-input span {
+            cursor: pointer;
+            color: #ddd;
+        }
+
+        .rating-input span.active {
+            color: #ffc107;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary, .btn-cancel {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #ccc;
+        }
+
+        .product-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">👗 DressRent</div>
+        <div class="nav-links">
+            <a href="/products">Browse</a>
+            <a href="/my-dresses">My Listings</a>
+            <a href="/my-rentals">My Rentals</a>
+            <a href="/" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 style="margin-bottom: 2rem;">My Reviews</h2>
+        
+        <button class="add-review-btn" onclick="showAddReviewModal()">Write a Review</button>
+
+        <div id="reviewsContainer"></div>
+    </div>
+
+    <!-- Add Review Modal -->
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <h3>Write a Review</h3>
+            
+            <div class="product-info" id="productInfo"></div>
+
+            <div class="form-group">
+                <label>Rating</label>
+                <div class="rating-input" id="ratingInput">
+                    <span data-rating="1">★</span>
+                    <span data-rating="2">★</span>
+                    <span data-rating="3">★</span>
+                    <span data-rating="4">★</span>
+                    <span data-rating="5">★</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Your Review</label>
+                <textarea id="reviewText" placeholder="Share your experience..."></textarea>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeReviewModal()">Cancel</button>
+                <button class="btn-primary" onclick="submitReview()">Submit Review</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let selectedRating = 0;
+        let selectedProductId = null;
+
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+            }
+        }
+
+        async function loadMyReviews() {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`${API_URL}/api/reviews/my-reviews`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const reviews = await response.json();
+                const container = document.getElementById('reviewsContainer');
+                container.innerHTML = '';
+
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">No reviews yet</p>';
+                    return;
+                }
+
+                reviews.forEach(review => {
+                    const date = new Date(review.created_at).toLocaleDateString();
+                    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+
+                    container.innerHTML += `
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar">${review.reviewer.full_name[0]}</div>
+                                    <div>
+                                        <strong>${review.reviewer.full_name}</strong>
+                                        <div class="stars">${stars}</div>
+                                    </div>
+                                </div>
+                                <div class="review-date">${date}</div>
+                            </div>
+                            <div class="review-text">${review.comment || 'No comment provided'}</div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+
+        function showAddReviewModal() {
+            // In a real app, you'd show a product selector here
+            alert('Select a product from your rentals to review');
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.remove('active');
+        }
+
+        // Rating interaction
+        document.querySelectorAll('.rating-input span').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                document.querySelectorAll('.rating-input span').forEach((s, i) => {
+                    s.classList.toggle('active', i < selectedRating);
+                });
+            });
+        });
+
+        async function submitReview() {
+            const token = localStorage.getItem('token');
+            const comment = document.getElementById('reviewText').value;
+
+            if (selectedRating === 0) {
+                alert('Please select a rating');
+                return;
+            }
+
+            if (!selectedProductId) {
+                alert('Please select a product');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/reviews/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        product_id: selectedProductId,
+                        rating: selectedRating,
+                        comment: comment
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Review submitted successfully!');
+                    closeReviewModal();
+                    loadMyReviews();
+                } else {
+                    const error = await response.json();
+                    alert(error.detail || 'Failed to submit review');
+                }
+            } catch (error) {
+                alert('Error submitting review');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+        }
+    async function loadNavigationProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/users/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    const profileIcon = document.getElementById('navProfileIcon');
+                    
+                    if (userData.profile_photo_url) {
+                        profileIcon.innerHTML = `<img src="${API_URL}${userData.profile_photo_url}" alt="Profile">`;
+                    }
+                    
+                    if (userData.full_name || userData.username) {
+                        profileIcon.title = `${userData.full_name || userData.username} - View Profile`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+        
+        /* UPDATE THIS: Add call to loadNavigationProfile */
+      
+        window.onload = () => {
+            checkAuth();
+             loadNavigationProfile(); 
+            loadMyReviews();
+        };
+    </script>
+</body>
+</html>

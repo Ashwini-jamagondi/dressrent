@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Rentals - DressRent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+            border: 2px solid #667eea;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .navbar {
+            background: white;
+            padding: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-brand h2 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 28px;
+            font-weight: 800;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            padding: 10px 18px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-links a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 42px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .rental-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .rental-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .rental-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .rental-id {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .rental-dress-name {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .rental-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .empty-state h3 {
+            font-size: 28px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 700;
+            transition: transform 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .contact-owner-btn {
+            padding: 10px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .contact-owner-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn {
+            padding: 10px 25px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .cancel-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-body {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .modal-btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .modal-btn-confirm {
+            background: #dc3545;
+            color: white;
+        }
+
+        .modal-btn-confirm:hover {
+            background: #c82333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 3px;
+            }
+            
+            .nav-links a {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tab-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .contact-owner-btn,
+            .cancel-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>👗 DressRent</h2>
+            </div>
+            <div class="nav-links">
+                <a href="/products">🏠 All Dresses</a>
+                <a href="/add-dress">➕ Upload Dress</a>
+                <a href="/my-dresses">📦 My Uploads</a>
+                <a href="/customer-requests">🔍 Requests</a>
+                <a href="/my-requests">📝 My Requests</a>
+                <a href="/my-rentals" class="active">🛍️ My Rentals</a>
+                <a href="/profile" class="profile-icon" id="navProfileIcon" title="My Profile">👤</a>
+                <a href="#" onclick="logout(); return false;">🚪 Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">🛍️ My Rental History</h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('bookings')">📅 My Bookings</button>
+            <button class="tab-btn" onclick="switchTab('orders')">📦 My Orders</button>
+        </div>
+
+        <div id="rentalsContainer">
+            <div class="loading">🔄 Loading your rentals...</div>
+        </div>
+    </div>
+
+    <!-- Cancel Confirmation Modal -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                ⚠️ Cancel Booking
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this booking?</p>
+                <p style="margin-top: 10px; color: #dc3545; font-weight: 600;">This action cannot be undone.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeCancelModal()">No, Keep It</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmCancelBooking()">Yes, Cancel Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let currentTab = 'bookings';
+        let bookingToCancel = null;
+
+        // Load user profile photo in navigation
+        async function loadNavigationProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/profiles/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const profile = await response.json();
+                    const profileIcon = document.getElementById('navProfileIcon');
+                    
+                    if (profile.profile_photo_url) {
+                        const fullUrl = profile.profile_photo_url.startsWith('http') 
+                            ? profile.profile_photo_url 
+                            : `${API_URL}${profile.profile_photo_url}`;
+                        
+                        profileIcon.innerHTML = `<img src="${fullUrl}" alt="Profile" onerror="this.parentElement.innerHTML='👤'">`;
+                    } else {
+                        const initials = getInitials(profile.full_name || profile.username || '');
+                        profileIcon.innerHTML = initials || '👤';
+                    }
+                    
+                    if (profile.full_name || profile.username) {
+                        profileIcon.title = `${profile.full_name || profile.username} - View Profile`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('navProfileIcon').innerHTML = '👤';
+            }
+        }
+
+        function getInitials(name) {
+            if (!name) return '';
+            const parts = name.trim().split(' ');
+            if (parts.length >= 2) {
+                return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+            } else if (parts.length === 1) {
+                return parts[0][0].toUpperCase();
+            }
+            return '';
+        }
+
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (tab === 'bookings') {
+                loadBookings();
+            } else {
+                loadOrders();
+            }
+        }
+
+        async function loadBookings() {
+            const token = localStorage.getItem('token');
+            const container = document.getElementById('rentalsContainer');
+
+            try {
+                const response = await fetch(`${API_URL}/api/bookings/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        window.location.href = '/login';
+                        return;
+                    }
+                    throw new Error('Failed to fetch bookings');
+                }
+
+                const bookings = await response.json();
+                console.log('Bookings received:', bookings);
+                
+                // Filter out cancelled bookings
+                const activeBookings = bookings.filter(b => b.status !== 'cancelled');
+                
+                container.innerHTML = '';
+
+                if (activeBookings.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div style="font-size: 64px; margin-bottom: 20px;">📅</div>
+                            <h3>No bookings yet</h3>
+                            <p>Browse dresses and make your first booking!</p>
+                            <a href="/products" class="browse-btn">Browse Dresses</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                activeBookings.forEach(booking => {
+                    const card = document.createElement('div');
+                    card.className = 'rental-card';
+                    
+                    const startDate = new Date(booking.start_date).toLocaleDateString('en-IN');
+                    const endDate = new Date(booking.end_date).toLocaleDateString('en-IN');
+                    const createdDate = new Date(booking.created_at).toLocaleDateString('en-IN');
+
+                    // Check if booking can be cancelled (only pending status)
+                    const canCancel = booking.status === 'pending';
+
+                    card.innerHTML = `
+                        <div class="rental-header">
+                            <div>
+                                <div class="rental-id">Booking #${booking.id}</div>
+                                <div class="rental-dress-name">${booking.dress?.name || 'Dress'}</div>
+                            </div>
+                            <span class="status-badge status-${booking.status}">${booking.status.toUpperCase()}</span>
+                        </div>
+
+                        <div class="rental-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Rental Period</div>
+                                <div class="detail-value">${startDate} to ${endDate}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Total Days</div>
+                                <div class="detail-value">${booking.total_days} days</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Total Price</div>
+                                <div class="detail-value">₹${booking.total_price}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Security Deposit</div>
+                                <div class="detail-value">₹${booking.security_deposit || 0}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Booked On</div>
+                                <div class="detail-value">${createdDate}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Owner</div>
+                                <div class="detail-value">${booking.dress?.owner?.username || 'Unknown'}</div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="contact-owner-btn" onclick="contactOwner(${booking.dress?.owner_id})">
+                                💬 Contact Owner
+                            </button>
+                            ${canCancel ? `
+                                <button class="cancel-btn" onclick="showCancelModal(${booking.id})">
+                                    ❌ Cancel Booking
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 64px; margin-bottom: 20px;">❌</div>
+                        <h3>Error loading bookings</h3>
+                        <p>${error.message}</p>
+                        <button onclick="loadBookings()" class="browse-btn">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadOrders() {
+            const token = localStorage.getItem('token');
+            const container = document.getElementById('rentalsContainer');
+
+            try {
+                const response = await fetch(`${API_URL}/api/bookings/owner`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch orders');
+                }
+
+                const orders = await response.json();
+                console.log('Orders received:', orders);
+                
+                container.innerHTML = '';
+
+                if (orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div style="font-size: 64px; margin-bottom: 20px;">📦</div>
+                            <h3>No orders yet</h3>
+                            <p>Your orders will appear here</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                orders.forEach(order => {
+                    const card = document.createElement('div');
+                    card.className = 'rental-card';
+                    
+                    const createdDate = new Date(order.created_at).toLocaleDateString('en-IN');
+                    const startDate = order.start_date ? new Date(order.start_date).toLocaleDateString('en-IN') : 'N/A';
+                    const endDate = order.end_date ? new Date(order.end_date).toLocaleDateString('en-IN') : 'N/A';
+                    
+                    const dressName = order.dress?.name || 'Dress';
+                    const renterName = order.renter?.username || 'Unknown';
+                    const renterEmail = order.renter?.email || '';
+                    const totalPrice = order.total_price || 0;
+                    const totalDays = order.total_days || 0;
+                    const securityDeposit = order.security_deposit || 0;
+
+                    card.innerHTML = `
+                        <div class="rental-header">
+                            <div>
+                                <div class="rental-id">Order #${order.id}</div>
+                                <div class="rental-dress-name">${dressName}</div>
+                            </div>
+                            <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>
+                        </div>
+
+                        <div class="rental-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Rental Period</div>
+                                <div class="detail-value">${startDate} to ${endDate}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Total Days</div>
+                                <div class="detail-value">${totalDays} days</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Total Amount</div>
+                                <div class="detail-value">₹${totalPrice}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Security Deposit</div>
+                                <div class="detail-value">₹${securityDeposit}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Order Date</div>
+                                <div class="detail-value">${createdDate}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Rented By</div>
+                                <div class="detail-value">${renterName}${renterEmail ? '<br><small style="color: #999; font-weight: 400;">' + renterEmail + '</small>' : ''}</div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="contact-owner-btn" onclick="contactRenter(${order.renter_id})">
+                                💬 Contact ${renterName}
+                            </button>
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 64px; margin-bottom: 20px;">❌</div>
+                        <h3>Error loading orders</h3>
+                        <p>${error.message}</p>
+                        <button onclick="loadOrders()" class="browse-btn">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        function showCancelModal(bookingId) {
+            bookingToCancel = bookingId;
+            document.getElementById('cancelModal').style.display = 'block';
+        }
+
+        function closeCancelModal() {
+            bookingToCancel = null;
+            document.getElementById('cancelModal').style.display = 'none';
+        }
+
+        async function confirmCancelBooking() {
+            if (!bookingToCancel) return;
+
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/bookings/${bookingToCancel}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    closeCancelModal();
+                    alert('✅ Booking cancelled successfully!');
+                    loadBookings(); // Reload bookings
+                } else {
+                    const error = await response.json();
+                    alert('❌ Failed to cancel booking: ' + (error.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error cancelling booking:', error);
+                alert('❌ Error cancelling booking. Please try again.');
+            }
+        }
+
+        function contactOwner(ownerId) {
+            if (!ownerId) {
+                alert('Owner information not available');
+                return;
+            }
+            window.location.href = `/messages?user_id=${ownerId}`;
+        }
+
+        function contactRenter(renterId) {
+            if (!renterId) {
+                alert('Renter information not available');
+                return;
+            }
+            window.location.href = `/messages?user_id=${renterId}`;
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('cancelModal');
+            if (event.target === modal) {
+                closeCancelModal();
+            }
+        }
+
+        window.onload = () => {
+            checkAuth();
+            loadNavigationProfile();
+            loadBookings();
+        };
+    </script>
+</body>
+</html>

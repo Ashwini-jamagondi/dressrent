@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - DressRent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        nav {
+            background: white;
+            padding: 1rem 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .container { 
+            max-width: 1400px; 
+            margin: 2rem auto; 
+            padding: 0 2rem; 
+        }
+
+        .product-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-image {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .main-image-container {
+            width: 100%;
+            height: 500px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .no-image-placeholder {
+            font-size: 8rem;
+            color: #667eea;
+        }
+
+        .product-info {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 1.3rem;
+        }
+
+        .review-count {
+            color: #666;
+        }
+
+        .product-price {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .availability-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .available {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .not-available {
+            background: #ef4444;
+            color: white;
+        }
+
+        .product-details {
+            margin-bottom: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            background: #f9fafb;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 150px;
+            color: #555;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .owner-info {
+            background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .owner-info strong {
+            color: #667eea;
+        }
+
+        .booking-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .booking-section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .date-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .date-inputs label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .date-inputs input {
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .date-inputs input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .date-inputs input.error {
+            border-color: #ef4444;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .total-price {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .total-amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0369a1;
+        }
+
+        .btn-book {
+            width: 100%;
+            padding: 1.3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-book:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-book:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .reviews-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .reviews-section h2 {
+            color: #667eea;
+            margin-bottom: 2rem;
+        }
+
+        .review-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 1rem;
+        }
+
+        .review-card:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .review-date {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .review-text {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .booking-calendar {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .booking-calendar h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .booked-dates {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .booked-date-badge {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 968px) {
+            .product-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .main-image-container {
+                height: 400px;
+            }
+
+            .date-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">👗 DressRent</div>
+        <div class="nav-links">
+            <a href="/products">← Back to Browse</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="loadingSection" class="loading">Loading dress details...</div>
+
+        <div id="productContent" style="display: none;">
+            <div class="product-layout">
+                <div class="product-image">
+                    <div class="main-image-container" id="imageContainer">
+                        <div class="no-image-placeholder">👗</div>
+                    </div>
+                </div>
+
+                <div class="product-info">
+                    <h1 class="product-title" id="productTitle">Loading...</h1>
+                    
+                    <div class="product-rating">
+                        <div class="stars" id="productStars">☆☆☆☆☆</div>
+                        <span class="review-count" id="reviewCount">(0 reviews)</span>
+                    </div>
+
+                    <div class="product-price" id="productPrice">₹0/day</div>
+
+                    <span class="availability-badge" id="availabilityBadge"></span>
+
+                    <div class="product-details" id="productDetails"></div>
+
+                    <div class="owner-info" id="ownerInfo"></div>
+
+                    <div class="booking-section" id="bookingSection">
+                        <h3>📅 Book This Dress</h3>
+                        
+                        <div class="booking-calendar" id="bookedDatesSection" style="display: none;">
+                            <h4>📆 Already Booked Dates:</h4>
+                            <div class="booked-dates" id="bookedDatesList"></div>
+                        </div>
+
+                        <div class="date-inputs">
+                            <div>
+                                <label>Start Date</label>
+                                <input type="date" id="startDate">
+                                <div class="error-message" id="startDateError"></div>
+                            </div>
+                            <div>
+                                <label>End Date</label>
+                                <input type="date" id="endDate">
+                                <div class="error-message" id="endDateError"></div>
+                            </div>
+                        </div>
+
+                        <div class="total-price" id="totalPriceSection" style="display: none;">
+                            <div style="color: #0369a1; margin-bottom: 0.5rem; font-weight: 600;">Total Cost</div>
+                            <div class="total-amount" id="totalAmount">₹0</div>
+                            <div style="color: #0369a1; font-size: 0.9rem; margin-top: 0.5rem;" id="breakdown"></div>
+                        </div>
+
+                        <button class="btn-book" id="bookButton" onclick="bookDress()">🛒 Book Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reviews-section">
+                <h2>⭐ Customer Reviews</h2>
+                <div id="reviewsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let currentProduct = null;
+        let bookedDates = [];
+
+        async function loadProduct() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                alert('Product not found');
+                window.location.href = '/products';
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                
+                // Try to fetch single product - may need to get all and filter
+                let response = await fetch(`${API_URL}/api/products/${productId}`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+
+                // If single product endpoint doesn't work, get all products and filter
+                if (response.status === 405 || !response.ok) {
+                    console.log('Single product endpoint not available, fetching all products...');
+                    response = await fetch(`${API_URL}/api/products`, {
+                        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to load products');
+                    }
+                    
+                    const allProducts = await response.json();
+                    const product = allProducts.find(p => p.id == productId);
+                    
+                    if (!product) {
+                        throw new Error('Product not found');
+                    }
+                    
+                    currentProduct = product;
+                } else {
+                    const product = await response.json();
+                    currentProduct = product;
+                }
+                
+                if (!currentProduct) {
+                    throw new Error('Failed to load product');
+                }
+
+                console.log('Product loaded:', currentProduct);
+
+                // Check if this is user's own product
+                if (token) {
+                    try {
+                        const userResponse = await fetch(`${API_URL}/api/users/me`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        if (userResponse.ok) {
+                            const user = await userResponse.json();
+                            if (currentProduct.owner_id === user.id) {
+                                document.getElementById('bookingSection').innerHTML = `
+                                    <div style="background: #fef3c7; padding: 1.5rem; border-radius: 12px; text-align: center;">
+                                        <h3 style="color: #92400e; margin-bottom: 0.5rem;">📦 This is your product</h3>
+                                        <p style="color: #78350f;">You cannot book your own dress</p>
+                                    </div>
+                                `;
+                            }
+                        }
+                    } catch (err) {
+                        console.log('Could not verify product ownership:', err);
+                    }
+                }
+
+                document.getElementById('loadingSection').style.display = 'none';
+                document.getElementById('productContent').style.display = 'block';
+
+                document.getElementById('productTitle').textContent = currentProduct.name || 'Untitled Dress';
+
+                const price = currentProduct.price_per_day || currentProduct.price || 0;
+                document.getElementById('productPrice').textContent = `₹${price}/day`;
+
+                const availabilityBadge = document.getElementById('availabilityBadge');
+                if (currentProduct.is_available) {
+                    availabilityBadge.textContent = '✓ Available';
+                    availabilityBadge.className = 'availability-badge available';
+                } else {
+                    availabilityBadge.textContent = '✗ Currently Rented';
+                    availabilityBadge.className = 'availability-badge not-available';
+                }
+
+                const imageContainer = document.getElementById('imageContainer');
+                if (currentProduct.image_url) {
+                    let imageUrl = currentProduct.image_url;
+                    if (!imageUrl.startsWith('http')) {
+                        imageUrl = `${API_URL}${imageUrl}`;
+                    }
+                    imageContainer.innerHTML = `<img src="${imageUrl}" alt="${currentProduct.name}" class="main-image" onerror="this.parentElement.innerHTML='<div class=\\'no-image-placeholder\\'>👗</div>'">`;
+                } else if (currentProduct.images && currentProduct.images.length > 0) {
+                    let imageUrl = currentProduct.images[0].image_url;
+                    if (!imageUrl.startsWith('http')) {
+                        imageUrl = `${API_URL}${imageUrl}`;
+                    }
+                    imageContainer.innerHTML = `<img src="${imageUrl}" alt="${currentProduct.name}" class="main-image" onerror="this.parentElement.innerHTML='<div class=\\'no-image-placeholder\\'>👗</div>'">`;
+                }
+
+                const maintenanceCost = currentProduct.maintenance_fee || currentProduct.maintenance_cost || 0;
+                
+                let detailsHTML = `
+                    <div class="detail-row">
+                        <div class="detail-label">📦 Category:</div>
+                        <div class="detail-value">${currentProduct.dress_type || currentProduct.category || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">📏 Size:</div>
+                        <div class="detail-value">${currentProduct.size || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">🎨 Color:</div>
+                        <div class="detail-value">${currentProduct.color || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">✨ Condition:</div>
+                        <div class="detail-value">${currentProduct.condition || 'Good'}</div>
+                    </div>
+                `;
+                
+                if (maintenanceCost > 0) {
+                    detailsHTML += `
+                    <div class="detail-row">
+                        <div class="detail-label">🔧 Maintenance:</div>
+                        <div class="detail-value">₹${maintenanceCost}</div>
+                    </div>
+                    `;
+                }
+                
+                detailsHTML += `
+                    <div class="detail-row">
+                        <div class="detail-label">💰 Deposit:</div>
+                        <div class="detail-value">₹${currentProduct.security_deposit || 0}</div>
+                    </div>
+                `;
+                
+                document.getElementById('productDetails').innerHTML = detailsHTML;
+
+                const ownerName = currentProduct.owner_username || currentProduct.owner?.username || currentProduct.owner?.full_name || 'Unknown';
+                document.getElementById('ownerInfo').innerHTML = `
+                    <div><strong>👤 Owner:</strong> ${ownerName}</div>
+                    <div style="color: #555; margin-top: 0.8rem;">${currentProduct.description || 'No description provided'}</div>
+                `;
+
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('startDate').min = today;
+                document.getElementById('endDate').min = today;
+
+                document.getElementById('startDate').addEventListener('change', validateAndCalculate);
+                document.getElementById('endDate').addEventListener('change', validateAndCalculate);
+
+                await loadBookings(productId);
+                loadReviews(productId);
+                loadAverageRating(productId);
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingSection').innerHTML = `
+                    <div style="color: white; text-align: center; padding: 3rem;">
+                        <h3>Failed to load product</h3>
+                        <p>Please try again later</p>
+                        <button onclick="window.location.href='/products'" style="margin-top: 1rem; padding: 10px 20px; background: white; color: #667eea; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Back to Products
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadBookings(productId) {
+            try {
+                const response = await fetch(`${API_URL}/api/bookings/product/${productId}`);
+                if (response.ok) {
+                    bookedDates = await response.json();
+                    if (bookedDates.length > 0) {
+                        displayBookedDates();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+            }
+        }
+
+        function displayBookedDates() {
+            const section = document.getElementById('bookedDatesSection');
+            const list = document.getElementById('bookedDatesList');
+            
+            section.style.display = 'block';
+            list.innerHTML = bookedDates.map(booking => {
+                const start = new Date(booking.start_date).toLocaleDateString();
+                const end = new Date(booking.end_date).toLocaleDateString();
+                return `<span class="booked-date-badge">${start} - ${end}</span>`;
+            }).join('');
+        }
+
+        function validateAndCalculate() {
+            clearErrors();
+            
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                document.getElementById('totalPriceSection').style.display = 'none';
+                document.getElementById('bookButton').disabled = false;
+                return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let hasError = false;
+
+            if (start < today) {
+                showError('startDate', 'Start date cannot be in the past');
+                hasError = true;
+            }
+
+            if (end <= start) {
+                showError('endDate', 'End date must be after start date');
+                hasError = true;
+            }
+
+            const hasConflict = bookedDates.some(booking => {
+                const bookStart = new Date(booking.start_date);
+                const bookEnd = new Date(booking.end_date);
+                return start < bookEnd && end > bookStart;
+            });
+
+            if (hasConflict) {
+                showError('startDate', 'These dates conflict with existing bookings');
+                showError('endDate', 'These dates conflict with existing bookings');
+                hasError = true;
+            }
+
+            if (hasError) {
+                document.getElementById('totalPriceSection').style.display = 'none';
+                document.getElementById('bookButton').disabled = true;
+                return;
+            }
+
+            calculateTotal();
+            document.getElementById('bookButton').disabled = false;
+        }
+
+        function showError(inputId, message) {
+            const input = document.getElementById(inputId);
+            const errorDiv = document.getElementById(inputId + 'Error');
+            
+            input.classList.add('error');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        function clearErrors() {
+            ['startDate', 'endDate'].forEach(id => {
+                document.getElementById(id).classList.remove('error');
+                document.getElementById(id + 'Error').classList.remove('show');
+            });
+        }
+
+        function calculateTotal() {
+            const startDateInput = document.getElementById('startDate').value;
+            const endDateInput = document.getElementById('endDate').value;
+
+            if (!startDateInput || !endDateInput || !currentProduct) {
+                document.getElementById('totalPriceSection').style.display = 'none';
+                return;
+            }
+
+            const startDate = new Date(startDateInput);
+            const endDate = new Date(endDateInput);
+
+            if (endDate <= startDate) {
+                document.getElementById('totalPriceSection').style.display = 'none';
+                return;
+            }
+
+            const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+            const price = parseFloat(currentProduct.price_per_day || currentProduct.price || 0);
+            const deposit = parseFloat(currentProduct.security_deposit || 0);
+            const maintenanceFee = parseFloat(currentProduct.maintenance_fee || currentProduct.maintenance_cost || 0);
+            
+            const rentalCost = days * price;
+            const total = rentalCost + deposit + maintenanceFee;
+
+            document.getElementById('totalPriceSection').style.display = 'block';
+            document.getElementById('totalAmount').textContent = `₹${total}`;
+            
+            let breakdownText = `${days} day${days > 1 ? 's' : ''} × ₹${price} = ₹${rentalCost}`;
+            if (maintenanceFee > 0) {
+                breakdownText += ` + ₹${maintenanceFee} maintenance`;
+            }
+            if (deposit > 0) {
+                breakdownText += ` + ₹${deposit} deposit`;
+            }
+            
+            document.getElementById('breakdown').textContent = breakdownText;
+        }
+
+        async function loadAverageRating(productId) {
+            try {
+                const response = await fetch(`${API_URL}/api/reviews/product/${productId}/average`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const stars = '★'.repeat(Math.round(data.average_rating)) + '☆'.repeat(5 - Math.round(data.average_rating));
+                    document.getElementById('productStars').textContent = stars;
+                    document.getElementById('reviewCount').textContent = `(${data.total_reviews} reviews)`;
+                }
+            } catch (error) {
+                console.error('Error loading rating:', error);
+            }
+        }
+
+        async function loadReviews(productId) {
+            try {
+                const response = await fetch(`${API_URL}/api/reviews/product/${productId}`);
+                if (!response.ok) {
+                    document.getElementById('reviewsList').innerHTML = '<p style="color: #666;">No reviews yet. Be the first to review!</p>';
+                    return;
+                }
+
+                const reviews = await response.json();
+                const container = document.getElementById('reviewsList');
+                
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p style="color: #666;">No reviews yet. Be the first to review!</p>';
+                    return;
+                }
+
+                container.innerHTML = reviews.map(review => {
+                    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                    const date = new Date(review.created_at).toLocaleDateString();
+                    const reviewerName = review.reviewer?.full_name || review.reviewer?.username || 'Anonymous';
+                    
+                    return `
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div>
+                                    <div class="reviewer-name">${reviewerName}</div>
+                                    <div class="stars">${stars}</div>
+                                </div>
+                                <div class="review-date">${date}</div>
+                            </div>
+                            <div class="review-text">${review.comment || 'No comment provided'}</div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+
+        async function bookDress() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                alert('Please login to book this dress');
+                window.location.href = '/login';
+                return;
+            }
+
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates');
+                return;
+            }
+
+            const bookButton = document.getElementById('bookButton');
+            bookButton.disabled = true;
+            bookButton.textContent = '⏳ Booking...';
+
+            try {
+                const queryParams = new URLSearchParams({
+                    dress_id: currentProduct.id.toString(),
+                    start_date: startDate,
+                    end_date: endDate
+                });
+
+                const requestUrl = `${API_URL}/api/bookings/?${queryParams.toString()}`;
+                console.log('Booking request URL:', requestUrl);
+
+                const response = await fetch(requestUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                console.log('Response status:', response.status);
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Booking created:', result);
+                    alert('✅ Dress booked successfully!');
+                    window.location.href = '/my-rentals';
+                } else if (response.status === 401) {
+                    alert('⏱️ Your session has expired. Please login again.');
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                } else {
+                    const error = await response.json();
+                    console.error('Booking error response:', error);
+                    
+                    let errorMessage = 'Unknown error';
+                    if (typeof error.detail === 'string') {
+                        errorMessage = error.detail;
+                    } else if (Array.isArray(error.detail)) {
+                        errorMessage = error.detail.map(e => {
+                            const field = e.loc ? e.loc.join('.') : 'unknown';
+                            return `${field}: ${e.msg}`;
+                        }).join('\n');
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+                    
+                    alert('❌ Booking failed:\n' + errorMessage);
+                    bookButton.disabled = false;
+                    bookButton.textContent = '🛒 Book Now';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error booking dress. Please try again.');
+                bookButton.disabled = false;
+                bookButton.textContent = '🛒 Book Now';
+            }
+        }
+
+        // Initialize page when loaded
+        window.onload = loadProduct;
+    </script>
+</body>
+</html>
