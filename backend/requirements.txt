@@ -34,5 +34,5 @@ uvicorn==0.38.0
 watchfiles==1.1.1
 websockets==15.0.1
 
-psycopg[binary]==3.2.9
+psycopg[binary]==3.2.10
 gunicorn==21.2.0
